@@ -53,6 +53,19 @@ timetrace_record(const char* format, uint32_t arg0, uint32_t arg1,
 }
 
 /**
+ * This function is the wrapper for TimeTrace::record
+ *
+ * Since C does not support default value, caller always needs to pass arg0-3.
+ * Also, we cannot separate definition and declaration of inline function, so
+ * this function cannot be inline function.
+ */
+void
+timetrace_record_ts(uint64_t timestamp, const char* format, uint32_t arg0,
+                    uint32_t arg1, uint32_t arg2, uint32_t arg3) {
+    TimeTrace::record(timestamp, format, arg0, arg1, arg2, arg3);
+}
+
+/**
  * This function is used to set TimeTrace::keepOldEvents
  */
 void

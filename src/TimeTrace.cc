@@ -348,9 +348,9 @@ TimeTrace::printInternal(std::vector<TimeTrace::Buffer*>* buffers, string* s) {
 
     if (!printedAnything) {
         if (s != NULL) {
-            s->append("No time trace events to print");
+            s->append("No time trace events to print\n");
         } else {
-            fprintf(output, "No time trace events to print");
+            fprintf(output, "No time trace events to print\n");
         }
     }
 

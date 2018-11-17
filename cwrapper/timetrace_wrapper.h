@@ -35,6 +35,15 @@ void timetrace_print();
  *                       uint32_t arg2, uint32_t arg3);
  */
 void timetrace_record();
+/**
+ * The real signature of this function is the following. The timestamp and the
+ * format string are mandatory; remaining arguments are only necessary as
+ * specified by format string.
+ * void timetrace_record_ts(uint64_t timestamp, const char* format,
+ *                          uint32_t arg0, uint32_t arg1, uint32_t arg2,
+ *                          uint32_t arg3);
+ */
+void timetrace_record_ts();
 void timetrace_set_keepoldevents(bool keep);
 
 #ifdef __cplusplus
