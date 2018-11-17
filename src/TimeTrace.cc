@@ -337,8 +337,8 @@ TimeTrace::printInternal(std::vector<TimeTrace::Buffer*>* buffers, string* s) {
             // by the sheer size of the cycle counter.
             char message[200];
             snprintf(message, sizeof(message),
-                     "CYCLES_PER_SECOND %f\nSTART_CYCLES %lu\n",
-                     Cycles::perSecond(), startTime);
+                     "CYCLES_PER_SECOND %f\nSTART_CYCLES %lu\nBUFFER_SIZE %u\n",
+                     Cycles::perSecond(), startTime, Buffer::BUFFER_SIZE);
             if (s != NULL) {
                 s->append(message);
             } else {

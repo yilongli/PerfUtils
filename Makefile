@@ -7,8 +7,8 @@ SRC_DIR = src
 WRAPPER_DIR = cwrapper
 INCLUDE_DIR = $(DESTDIR)/include
 LIB_DIR = $(DESTDIR)/lib
-CXXFLAGS=-O3 -DNDEBUG -fPIC -std=c++11 -pthread
-CFLAGS=-O3 -DNDEBUG -fPIC -std=gnu99
+CXXFLAGS = $(MACROS) -O3 -DNDEBUG -fPIC -std=c++11 -pthread
+CFLAGS = $(MACROS) -O3 -DNDEBUG -fPIC -std=gnu99
 INCLUDE=-I$(SRC_DIR)
 
 # Stuff needed for make check

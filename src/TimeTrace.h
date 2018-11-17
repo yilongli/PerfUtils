@@ -24,6 +24,10 @@
 #include "Atomic.h"
 #include "Cycles.h"
 
+#ifndef TIMETRACE_BUFFER_SIZE_EXP
+#define TIMETRACE_BUFFER_SIZE_EXP 13
+#endif
+
 namespace PerfUtils {
 
 // A macro to disallow the copy constructor and operator= functions
@@ -173,7 +177,7 @@ class TimeTrace {
 
       protected:
         // Determines the number of events we can retain as an exponent of 2
-        static const uint8_t BUFFER_SIZE_EXP = 13;
+        static const uint8_t BUFFER_SIZE_EXP = TIMETRACE_BUFFER_SIZE_EXP;
 
         // Total number of events that we can retain any given time.
         static const uint32_t BUFFER_SIZE = 1 << BUFFER_SIZE_EXP;
