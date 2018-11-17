@@ -44,6 +44,12 @@ void timetrace_record();
  *                          uint32_t arg3);
  */
 void timetrace_record_ts();
+/**
+ * The real signature of this function is the following. The message string is
+ * mandatory.
+ * void timetrace_record_if_not_dup(const char* message);
+ */
+void timetrace_record_if_not_dup();
 void timetrace_set_keepoldevents(bool keep);
 
 #ifdef __cplusplus

@@ -66,6 +66,17 @@ timetrace_record_ts(uint64_t timestamp, const char* format, uint32_t arg0,
 }
 
 /**
+ * This function is the wrapper for TimeTrace::recordIfNotDup.
+ *
+ * Since we cannot separate definition and declaration of inline function, so
+ * this function cannot be inline function.
+ */
+void
+timetrace_record_if_not_dup(const char* message) {
+    TimeTrace::recordIfNotDup(message);
+}
+
+/**
  * This function is used to set TimeTrace::keepOldEvents
  */
 void

@@ -146,6 +146,39 @@ TimeTrace::Buffer::record(uint64_t timestamp, const char* format, uint32_t arg0,
 }
 
 /**
+ * Similar to TimeTrace::Buffer::record but collapse consecutive messages that
+ * are identical.
+ *
+ * \param timestamp
+ *      Identifies the time at which the event occurred.
+ * \param message
+ *      A message string with no printf format specifiers.
+ */
+void
+TimeTrace::Buffer::recordIfNotDup(uint64_t timestamp, const char* message) {
+    if (activeReaders > 0) {
+        return;
+    }
+
+    Event* lastEvent = &events[nextIndex > 0 ? nextIndex - 1 : BUFFER_SIZE - 1];
+    if (lastEvent->format == message) {
+        lastEvent->timestamp = timestamp;
+        lastEvent->arg0++;
+        return;
+    }
+
+    Event* event = &events[nextIndex];
+    nextIndex = (nextIndex + 1) & BUFFER_MASK;
+
+    event->timestamp = timestamp;
+    event->format = message;
+    event->arg0 = 1;
+    event->arg1 = ~0u;
+    event->arg2 = ~0u;
+    event->arg3 = ~0u;
+}
+
+/**
  * Return a string containing a printout of the records in the buffer.
  */
 string
@@ -319,6 +352,8 @@ TimeTrace::printInternal(std::vector<TimeTrace::Buffer*>* buffers, string* s) {
             (current[currentBuffer] + 1) & Buffer::BUFFER_MASK;
 
         char message[1000];
+        const char* repeatedTimes = " (repeated %u times)";
+#define IS_REPEATED_EVENT(x) ((x->arg0 > 1) && (x->arg1 == ~0u))
         double ns = Cycles::toSeconds(event->timestamp - startTime) * 1e09;
         if (s != NULL) {
             if (s->length() != 0) {
@@ -333,6 +368,11 @@ TimeTrace::printInternal(std::vector<TimeTrace::Buffer*>* buffers, string* s) {
                      event->arg1, event->arg2, event->arg3);
 #pragma GCC diagnostic pop
             s->append(message);
+            if (IS_REPEATED_EVENT(event)) {
+                char m[100];
+                snprintf(m, sizeof(m), repeatedTimes, event->arg0);
+                s->append(m);
+            }
         } else {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
@@ -341,6 +381,9 @@ TimeTrace::printInternal(std::vector<TimeTrace::Buffer*>* buffers, string* s) {
 #pragma GCC diagnostic pop
             fprintf(output, "%8.1f ns (+%6.1f ns): %s", ns, ns - prevTime,
                     message);
+            if (IS_REPEATED_EVENT(event)) {
+                fprintf(output, repeatedTimes, event->arg0);
+            }
             fputc('\n', output);
         }
         prevTime = ns;

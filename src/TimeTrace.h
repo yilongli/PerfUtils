@@ -89,6 +89,21 @@ class TimeTrace {
                               uint32_t arg3 = 0) {
         record(Cycles::rdtsc(), format, arg0, arg1, arg2, arg3);
     }
+
+    /**
+     * Similar to TimeTrace::record but collapse consecutive messages that are
+     * identical. To simplify the detection of duplicate messages, this function
+     * currently doesn't support messages with printf format specifiers.
+     *
+     * \param message
+     *      A message string with no printf format specifiers.
+     */
+    static inline void recordIfNotDup(const char* message) {
+        if (threadBuffer == NULL) {
+            createThreadBuffer();
+        }
+        threadBuffer->recordIfNotDup(Cycles::rdtsc(), message);
+    }
     static void reset();
     /**
      * When this bool is set, the print method in TimeTrace will use the
@@ -153,6 +168,7 @@ class TimeTrace {
                     uint32_t arg2 = 0, uint32_t arg3 = 0) {
             record(Cycles::rdtsc(), format, arg0, arg1, arg2, arg3);
         }
+        void recordIfNotDup(uint64_t timestamp, const char* format);
         void reset();
 
       protected:
